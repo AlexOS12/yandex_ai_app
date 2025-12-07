@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>AI Синтез речи</h3>
+
+<div class="containter bg-light">
+    <div class="row mb-3 px-3">
+        <p>Текст для озвучивания</p>
+        <textarea id="src-text"></textarea>
+    </div>
+    <div>
+        <button class="btn btn-primary" id="tts-button">Синетзировать речь</button>
+    </div>
+
+    <div>
+        <audio controls src="" id="audio-player"></audio>
+    </div>
+
+    <script>
+        async function tts() {
+            let text = document.getElementById("src-text").value;
+
+            let url = new URL("{{ url_for('tts_post') }}");
+
+            let form = new FormData();
+            form.append("text", text);
+
+            let response = await fetch(url, {
+                method: "POST",
+                body: form
+            });
+
+            if (!response.ok) {
+                alert("Произошла ошибка во время синтеза речи :(");
+                return;
+            }
+
+            let audioBlob = await response.blob();
+            let audioUrl = URL.createObjectURL(audioBlob);
+
+            let audioPlayer = document.getElementById("audio-player");
+
+            audioPlayer.src = audioUrl;
+
+        }
+
+        window.onload = function () {
+        let tts_btn = document.getElementById("tts-button");
+            tts_btn.onclick = tts;
+        }
+    </script>
+
+    {% endblock %}

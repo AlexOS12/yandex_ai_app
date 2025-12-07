@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Список доступных AI-сервисов</h3>
+    <ul>
+        <li><a href="{{ url_for('translator') }}">Переводчик</a></li>
+        <li><a href="{{ url_for('tts_get') }}">Синтез речи</a></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+{% endblock %}

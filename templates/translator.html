@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>AI Переводчик</h3>
+
+<div class="container bg-light">
+    <div class="row p-3">
+        <p>Исходный текст</p>
+        <select class="mb-3" id="src-lang">
+            <option value="ru" selected>Русский</option>
+            <option value="en">Английский</option>
+            <option value="de">Немецкий</option>
+            <option value="fr">Французский</option>
+        </select>
+        <textarea id="src-text"></textarea>
+    </div>
+    <div class="row p-3">
+        <p>Переведенный текст</p>
+        <select class="mb-3" id="res-lang">
+            <option value="ru">Русский</option>
+            <option value="en" selected>Английский</option>
+            <option value="de">Немецкий</option>
+            <option value="fr">Французский</option>
+        </select>
+        <textarea id="res-text" readonly></textarea>
+    </div>
+    <button class="btn btn-primary" id="translate-btn">Перевести</button>
+</div>
+
+<script>
+    "use strict" 
+
+    async function translate() {
+        let text = document.getElementById("src-text").value;
+        let restext = document.getElementById("res-text");
+        let srclang = document.getElementById("src-lang").value;
+        let reslang = document.getElementById("res-lang").value;
+
+        let url = new URL("{{ url_for('translate_text') }}");
+        
+        let form = new FormData();
+        form.append("text", text);
+        form.append("srclang", srclang);
+        form.append("reslang", reslang);
+
+        let response = await fetch(url, {
+            method: "POST",
+            body: form
+        });
+
+        if (!response.ok) {
+            alert("Произошла ошибка при переводе :(");
+            return;
+        } 
+        let json = await response.json();
+        restext.value = json;
+    }
+
+    window.onload = function() {
+        let btn = document.getElementById("translate-btn");
+        btn.onclick = translate;
+    }
+</script>
+
+{% endblock %}
